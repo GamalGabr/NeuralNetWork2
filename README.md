@@ -17,6 +17,10 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 
 
+![20220224_014342](https://user-images.githubusercontent.com/81494595/157775039-86087f44-a224-4299-a611-4464e6925f0c.jpg)
+
+
+
 ![20220307_232408](https://user-images.githubusercontent.com/81494595/157572235-bfdbefb0-5fd5-4bbb-90f7-4f738dd18665.jpg)
 
 
