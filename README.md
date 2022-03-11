@@ -22,6 +22,11 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 <br>
 
 Below the tanh derivative is obtained
+<br>
+![20220311_023558](https://user-images.githubusercontent.com/81494595/157793227-7c7bdf6e-da40-4778-b491-dac26101a5cc.jpg)
+
+
+
 
 ![20220311_023558](https://user-images.githubusercontent.com/81494595/157793016-c7a568bd-dd4c-445e-8b38-2066f1e8b68c.jpg)
 
