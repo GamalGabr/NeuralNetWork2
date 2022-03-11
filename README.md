@@ -21,15 +21,32 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 <br>
 
-Below the tanh derivative is obtained
+Below, the derivative of <span style ="color: green ; ">tanh</span> is evaluated
 <br>
+
+![20220301_104921](https://user-images.githubusercontent.com/81494595/157793955-e9401715-078d-4249-811e-58e914694541.jpg)
+
+
 ![20220311_023558](https://user-images.githubusercontent.com/81494595/157793227-7c7bdf6e-da40-4778-b491-dac26101a5cc.jpg)
+<br>
+We, can now find the A1/Z1 derivative.
+<br>
+![20220311_022758](https://user-images.githubusercontent.com/81494595/157794420-854d4f6b-b6c1-4c3d-84a7-84e33a5243e2.jpg)
 
+<br>
 
-
-
+Here, C/W2 is evaluated:
+<br>
 ![20220311_023558](https://user-images.githubusercontent.com/81494595/157793016-c7a568bd-dd4c-445e-8b38-2066f1e8b68c.jpg)
 
+<br>
+<h3>Regularised Loss</h3>
+<br>
+![20220311_023322](https://user-images.githubusercontent.com/81494595/157794893-185a49da-f2db-416a-b540-50e72d5d69f8.jpg)
+< br>
+![image](https://user-images.githubusercontent.com/81494595/157795089-e6ad1fda-2883-4f69-8e82-a0583b1c7b15.png)
+<br>
+![image](https://user-images.githubusercontent.com/81494595/157795288-3f823ae6-ef9e-4354-90dd-05bc912bf1fc.png)
 
 
 
