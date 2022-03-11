@@ -15,16 +15,14 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 ![20220307_232408](https://user-images.githubusercontent.com/81494595/157572621-35831cbc-2fec-4aad-843e-40c0016f3819.jpg)
 
+<br>
 
-![20220207_013847 (1)](https://user-images.githubusercontent.com/81494595/157786815-ae463354-24d2-43a2-b3c1-af2746d52cc4.jpg)
+![20220224_105431](https://user-images.githubusercontent.com/81494595/157787880-90d50e9e-f89e-40e2-b7bc-6806425df7f5.jpg)
 
-
-
-![20220224_014342](https://user-images.githubusercontent.com/81494595/157775039-86087f44-a224-4299-a611-4464e6925f0c.jpg)
-
+<br>
 
 
-![20220307_232408](https://user-images.githubusercontent.com/81494595/157572235-bfdbefb0-5fd5-4bbb-90f7-4f738dd18665.jpg)
+
 
 
 
