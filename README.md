@@ -22,6 +22,13 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 ![20220224_105431](https://user-images.githubusercontent.com/81494595/157787880-90d50e9e-f89e-40e2-b7bc-6806425df7f5.jpg)
 
+
+<br>
+
+![20220227_214238](https://user-images.githubusercontent.com/81494595/158026455-81c7c168-77d0-478c-a21a-28561bf6871d.jpg)
+
+
+
 <br>
 
 Below, the derivative of <span style ="color: green ; ">tanh</span> is evaluated
@@ -58,6 +65,11 @@ We, can now find the A1/Z1 derivative.
 <br>
 
 Here, C/W2 is evaluated:
+
+<br>
+
+![20220307_232819](https://user-images.githubusercontent.com/81494595/158026234-57b83e42-b2f4-46b1-a4f3-9c2e7653ad26.jpg)
+
 
 <br>
 
