@@ -81,7 +81,10 @@ Here, C/W2 is evaluated:
 
 <br>
 
-![20220308_002645](https://user-images.githubusercontent.com/81494595/157570388-5c1da4e8-aa5d-4fd4-b48c-f7d9e464f3b0.jpg)
+![20220311_023456 (1)](https://user-images.githubusercontent.com/81494595/158026835-cc77f932-4cdb-4ce7-a13a-c950c448ad8f.jpg)
+
+
+
 
 <br>
 
