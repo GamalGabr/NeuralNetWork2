@@ -12,6 +12,14 @@ Neural Networks Part 2
 
 Here, we begin by obtaining the relevant derivatives in a backward fashion. In the neural network that we have constructed, we employ cross-entropy loss, aka log loss, to gauage the predictive performance of the neural network. The cross-entropy loss decreases as the predicted probability approaches the actual label/outcome. It is worth noting that for every case, it is exclusively the term for the correct class that influences the sum of the overall cost. The neural network designates a pseudo-probability to each potential category. Log loss captures the accuracy of the model by penalising incorrect classifications. Below, the log loss and softmax derivatives are evaluated.
 
+<br>
+
+![20220312_170254](https://user-images.githubusercontent.com/81494595/158028430-b12b41c8-a161-46a7-b5c4-9db9b52607e4.jpg)
+
+
+
+
+
 
 <br>
 
@@ -28,12 +36,16 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 ![20220226_225023](https://user-images.githubusercontent.com/81494595/158026624-7b3c577a-19d4-43ce-bb0f-fba8841c420d.jpg)
 
+<br>
+
+![20220312_170407](https://user-images.githubusercontent.com/81494595/158028310-6b19d665-b220-43e7-97fc-a6eb0d348c77.jpg)
 
 
 
 <br>
 
-![20220227_214238](https://user-images.githubusercontent.com/81494595/158026455-81c7c168-77d0-478c-a21a-28561bf6871d.jpg)
+![20220312_170535](https://user-images.githubusercontent.com/81494595/158028394-e2182fbc-ffe4-42ab-9e14-e4dab87e3b2b.jpg)
+
 
 
 
