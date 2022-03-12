@@ -25,6 +25,14 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 <br>
 
+
+![20220226_225023](https://user-images.githubusercontent.com/81494595/158026624-7b3c577a-19d4-43ce-bb0f-fba8841c420d.jpg)
+
+
+
+
+<br>
+
 ![20220227_214238](https://user-images.githubusercontent.com/81494595/158026455-81c7c168-77d0-478c-a21a-28561bf6871d.jpg)
 
 
