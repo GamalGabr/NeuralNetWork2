@@ -14,11 +14,7 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 <br>
 
-![20220312_170254](https://user-images.githubusercontent.com/81494595/158028430-b12b41c8-a161-46a7-b5c4-9db9b52607e4.jpg)
-
-
-
-
+![20220312_181349](https://user-images.githubusercontent.com/81494595/158041789-feaa74d8-0a9b-4684-a00b-cd53af4e6a1a.jpg)
 
 
 <br>
@@ -35,6 +31,16 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 
 ![20220226_225023](https://user-images.githubusercontent.com/81494595/158026624-7b3c577a-19d4-43ce-bb0f-fba8841c420d.jpg)
+
+<br>
+
+![20220312_174820](https://user-images.githubusercontent.com/81494595/158042022-a000b0fd-8a22-4f53-a220-9c2cf655dabe.jpg)
+
+<br>
+
+
+![20220312_181532](https://user-images.githubusercontent.com/81494595/158041887-982a243c-055a-4d43-8c2d-1cabb6e09332.jpg)
+
 
 <br>
 
