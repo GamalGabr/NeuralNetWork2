@@ -6,16 +6,14 @@ Neural Networks Part 2
  
 
 
-This post is the second part of a two-part series on how to construct a neural network from the ground up.
-
-Below, the local gradients required for calculating the cost in relation to the first group of weights is displayed:
+This post is the second part of a two-part series on how to construct a neural network from scratch. Below, the local gradients required for calculating the cost in relation to the first group of weights is displayed:
 
 <br>
 
 ![20220312_181349](https://user-images.githubusercontent.com/81494595/158041789-feaa74d8-0a9b-4684-a00b-cd53af4e6a1a.jpg)
 
 
-Here, we begin by obtaining the relevant derivatives in a backward fashion. In the neural network that we have constructed, we employ cross-entropy loss, aka log loss, to gauage the predictive performance of the neural network. The cross-entropy loss decreases as the predicted probability approaches the actual label/outcome. It is worth noting that for every case, it is exclusively the term for the correct class that influences the sum of the overall cost. The neural network designates a pseudo-probability to each potential category. Log loss captures the accuracy of the model by penalising incorrect classifications. Below, the log loss and softmax derivatives are evaluated.
+Here, we begin by obtaining the relevant derivatives in a backward fashion. In the neural network that we have constructed, we employ cross-entropy loss, aka log loss, to gauge the predictive performance of the neural network. The cross-entropy loss decreases as the predicted probability approaches the actual label/outcome. It is worth noting that for every case, it is exclusively the term for the correct class that influences the sum of the overall cost. The neural network designates a pseudo-probability to each potential category. Log loss captures the accuracy of the model by penalising incorrect classifications. Below, the log loss and softmax derivatives are evaluated.
 
 
 
