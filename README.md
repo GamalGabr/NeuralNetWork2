@@ -139,6 +139,10 @@ We, can now find the A1/Z1 derivative.
 <h3>Regularised Loss</h3>
 
 
+<br>
+
+The derivative of the sum of two terms is quite simply the sum of the derivatives of the two terms - hence, the derivative of the weight penalty is simply added to the main (log loss) error function.
+
 
 <br>
 
@@ -150,6 +154,11 @@ We, can now find the A1/Z1 derivative.
 
 <br>
 
+Below, I display the equations for the gradient descent update, firstly without regularization, and then with regularization.
+
+
+
+<br>
 
 ![image](https://user-images.githubusercontent.com/81494595/157795089-e6ad1fda-2883-4f69-8e82-a0583b1c7b15.png)
 
