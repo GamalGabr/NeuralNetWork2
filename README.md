@@ -30,7 +30,7 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 <br>
 
 
-![20220226_225023](https://user-images.githubusercontent.com/81494595/158026624-7b3c577a-19d4-43ce-bb0f-fba8841c420d.jpg)
+
 
 <br>
 
