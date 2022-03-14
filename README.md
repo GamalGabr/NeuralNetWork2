@@ -61,7 +61,7 @@ We are now in a position to calculate C/Z2
 
 
 <br>
-
+After evaluation, the derivative collapses into this beautifully simplistic form - this derivation can be extended to a Softmax activation output with any number of classes.
 
 ![20220312_170535](https://user-images.githubusercontent.com/81494595/158028394-e2182fbc-ffe4-42ab-9e14-e4dab87e3b2b.jpg)
 
