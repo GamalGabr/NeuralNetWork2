@@ -70,8 +70,12 @@ We are now in a position to calculate C/Z2
 
 
 <br>
+
+
+
 After evaluation, the derivative collapses into this beautifully simplistic form - this derivation can be extended to a Softmax activation output with any number of classes.
-88888
+
+
 <br>
 
 
