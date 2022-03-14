@@ -5,8 +5,17 @@ Neural Networks Part 2
 <br>
  
 
+This post is the second part of a two-part series on how to construct a neural network from scratch. Firstly, a reminder of the feedforward phase:
 
-This post is the second part of a two-part series on how to construct a neural network from scratch. Below, the local gradients required for calculating the cost in relation to the first group of weights is displayed:
+<br>
+
+![20220307_233706](https://user-images.githubusercontent.com/81494595/158276088-a4db7337-0413-4ea4-b7c9-43738345989f.jpg)
+
+<br>
+
+
+
+Below, the local gradients required for calculating the cost in relation to the first group of weights is displayed:
 
 <br>
 
@@ -62,6 +71,9 @@ We are now in a position to calculate C/Z2
 
 <br>
 After evaluation, the derivative collapses into this beautifully simplistic form - this derivation can be extended to a Softmax activation output with any number of classes.
+88888
+<br>
+
 
 ![20220312_170535](https://user-images.githubusercontent.com/81494595/158028394-e2182fbc-ffe4-42ab-9e14-e4dab87e3b2b.jpg)
 
