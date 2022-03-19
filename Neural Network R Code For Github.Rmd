@@ -1,0 +1,648 @@
+---
+title: "Neural Network From Scratch-Part 1"
+author: "Gamal Gabr"
+date: "25/01/2022"
+output: github_document
+theme:
+      bg: "#202123"
+      fg: "#B8BCC2"
+      primary: "#EA80FC"
+      base_font: !expr bslib::font_google("Grandstander")   
+
+   
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)                                      
+```                                                                                                                                            
+<h3>MISSION</h3>
+
+```{r}
+rm(list=ls()) #clear workspace
+```
+
+<br/>
+
+I wanted to set myself the challenge of building a neural network from scratch, depending solely on base R. I think the best way to fully get to grips with an algorithm is to code it from the ground up - one is left with little wiggle room for winging it. Moreover, I wanted to tackle the well-known MNIST ("Modified National Institute of Standards and Technology") digit classification problem. The dataset is a collection of handwritten digits: with each row representing a single digit, and each column representing a 0-255 grey scale pixel. I kept asking myself the question, could I design a neural network algorithm to achieve at least 90% accuracy in the field of simple digit recognition? For the vast majority of the project, I found myself scribbling away with good old fashioned pen and paper - obtaining the key derivatives was by far the trickiest aspect of the process! In order to simplify the process, I made the neural network almost as small as possible - in this way, I was able to liberate my attention to focus on the key mathematics involved.  
+
+This project is condensed in to a two part series- the first part (this document), provides a broad introduction to neural networks and includes the relevant codes that I employed to build the neural network. The second part shows the relevant working I used to obtain the key derivatives - it is mathematically heavy and assumes previous knowledge of multivariable calculus and linear alegbra. For the mathematically inclined, I include a link at the bottom of the page for the second part. 
+<br>
+<h3>ENSURE KEY LIBRARIES LOADED</h3>
+<br/>
+<p>Whilst I used a few libraries in this post, they were not used for the purposes of building either the neural network function or the associated predictive function. I used the <span style = "color: #FFOOOO ; "> dslabs </span> library to source the digits and their respective pixellated translations. Plus, I employed one of my favourite visual packages <span style ="color: green ; ">HighCharter</span> to visualise the movement of the loss functions. Okay, let me take you through the building process!
+
+<br/>
+If you have RStudio and are interested, here is a neat function that will help ensure you have the prerequisite libraries to replicate my results.
+```{r}
+library_sort <- function(x){
+  for( library in x ){
+    #  require returns TRUE invisibly if it was able to load package
+    if( ! require( library , character.only = TRUE ) ){
+      # if package unavailable, then install
+      install.packages( library , dependencies = TRUE )
+      #  Load package after installing
+      require( library , character.only = TRUE )
+    }
+  }
+}
+```
+```{r, message=FALSE, warning = FALSE}
+#  Then try/install packages...
+library_sort( c("dslabs" , "caret" , "tidyverse", "rafalib","matrixStats","highcharter") )
+```
+
+<br/>
+
+
+Categorical data are defined by label values- unfortunately, not all machine learning models are designed to work in harmony with categorical data. Most tree based models can learn from categorical data without applying transformations. However, neural networks- like most machine learning models - require the input and output to be numeric. Sometimes, integer coding (1,2,3...) can be recruited when categorical data can be ranked - in other words, when the respective data is inherently ordinal. One-hot encoding is recruited when there is no clear order in the data being examined: all elements will be 0s with the exception of the element that corresponds to the actual category being defined (which will be labelled as a 1). Neural networks cannot distinguish between character labels - however, the algorithm can discriminate between 1's and 0's. The dependent variable (column containing the classification of digits), required one-hot encoding. I put together a function that will perform one-hot encoding:
+<br>
+
+
+
+
+```{r}
+one_hot_convert<-function(Y){
+                   
+              categories<-sort(unique(Y)) 
+                  
+              matrix_hot<-matrix(0, ncol=length(unique(categories)), 
+                  byrow = T,
+                  nrow= nrow(Y), 
+                  dimnames = list(NULL, c(unique(categories))))
+                  
+                  for(i in 1:nrow(Y)){
+                  for(j in 1:length(categories)){
+                  if(Y[i] == categories[j]){matrix_hot[i,j]<-1} 
+                   else next
+                                }}
+                                
+                  return(matrix_hot)
+                  }
+```
+<br>
+After obtaining the raw training data from the dslabs library - I  did a little spring cleaning, before splitting the data into a training and validation set.
+
+<br>
+
+```{r, message=FALSE, warning=FALSE}
+
+if(!exists("mnist"))mnist<-read_mnist()
+x<-mnist$train$images
+y<-mnist$train$labels
+combined<-cbind(x,y)
+df<-cbind(x,y)
+df<-data.frame(df)
+
+#keep all single digits [0-9] 
+df<-df%>% filter(y != 10)            
+
+#omit cases with missing values
+df<- na.omit(df)                                                                                                                                                                    
+ynew<-df[,ncol(df)]      
+
+
+#remove zero variance columns
+removeZeroVar <- function(df){
+    df[, !sapply(df, function(x) min(x) == max(x))]
+}
+
+
+#apply zero variance removal function
+reduced<-removeZeroVar(df) 
+
+
+#partition data into training/test sets
+n = nrow(reduced)
+trainIndex = sample(1:n, size = round(0.7*n), replace=FALSE)
+train = reduced[trainIndex ,]
+test = reduced[-trainIndex ,]
+
+#Y training before one-hot encoding
+YORIG<-train[,ncol(train)]  
+
+#Add 1 to the Y values (for intuitive index comparison later)
+YORIG<-YORIG+1
+
+#training design matrix
+X<-as.matrix(train[,-ncol(train)])  
+
+#apply one-hot encoding to the dependent variable
+Y<-as.matrix(train[,ncol(train)])
+Y<-Y+1
+
+Y<-one_hot_convert(Y)
+
+```
+<br/>
+
+Let's set aside and prep the test set
+```{r}
+XTEST<-as.matrix(test[,-ncol(test)])
+YORIG_TEST<-test[,ncol(test)]
+
+#will be used for indexing matching later
+YORIG_TEST<-YORIG_TEST+1
+```
+
+<h3>NEURAL NETWORKS</h3>
+<br/>
+It is no exaggeration to claim that the proliferation of artificial neural networks (NN) over the last decade or so have revolutionised the field of artificial intelligence (AI). The application of neural networks have enjoyed phenomenal success in the domains of image recognition and natural language processing. Moreover, neural networks are proving to be of great utility in a wide range of other fields -  there is every indication that this trend is set to continue in the advancing years.
+
+<br>
+<h3>NEURAL NETWORK ARCHITECTURE</h3>
+<br/>
+
+I decided to construct a fully connected neural network - the architecture of such a network entails the connection of every neuron to every other neuron in adjoining layers. The training of a neural network primarily consists of two phases: the forward and backward pass. After the forward pass, the loss is computed, after which we recursively apply the chain rule of calculus back to the respective inputs. The chain rule is a technique that enables us to easily evaluate the derivative of the composition of two or more functions. Once the respective derivatives are established, the weights can then be updated using the gradient descent algorithm.
+<br/>
+<h3>VISUAL OVERVIEW OF FEED FORWARD PHASE</h3>
+<br/>
+One of the best ways to grasp what is going on in a neural network, is to view its internal workings via a computaional graph. I will make a slight break with convention by visualising the activation (a0,a1,a2) and z product layers separately. 
+
+
+Below, the feedforward phase is illustrated:
+<br>
+```{r}
+                                                          htmltools::img(src = knitr::image_uri("C:/Users/gamal/Downloads/20220307_233706.jpg" ), alt = 'logo') 
+```
+
+<br>
+
+
+<ul class="b">
+
+<li>KEY NOTATION</li>
+
+<br>
+
+<p><span  style = "color: orange ; "> W1 </span>: first weight matrix</p>
+<p><span  style = "color: orange ; "> B1 </span>: first bias matrix</p>
+<p><span  style = "color: orange ; "> W2 </span>: second weight matrix</p>
+<p><span  style = "color: orange ; "> B2 </span>: second bias matrix</p>
+
+
+The superscripts, appearing at the top right of letters, signify the layer of the network. For each weight matrix, the subscript notation of <span  style = "color: purple ; "> jk </span> indicates the weight from the <span  style = "color: orange ; "> k th </span> node in the <span  style = "color: blue ; "> (l-1)th </span> layer to the <span style= "color: orange;"> j th </span> node in the <span style = "color : blue; ">l th </span> layer. 
+
+
+
+ 
+
+<br/>
+
+The feedforward calculations run as follows:
+
+1. The inputs from the entry layer a0 are multiplied by a group of weights interlinking each input to a node in the adjoining hidden layer (as we move rightwards).
+
+2. The respective weighted inputs are summed, after which a bias is added. This produces the pre-activation signal for the following layer.
+
+3. An activation function acts upon the pre-activation signal, this transformed output creates the feed-forward activations that head towards the next layer.
+
+4. Again, the newly created activated signals are multiplied by the second set of weights adjoining the hidden layer to the adjacent output layer, before being summed and a bias added (Z2).
+
+5. Thereafter, the output activation function, the softmax in this case, is applied to the weighted Z2 to produce the network's predictions (aka Yhat/a[2]). 
+
+6. The predicted outputs are then evaluated against the truth labels (actual outcomes): the average error/cost is then evaluated. 
+
+
+<br>
+
+<h3>OUTPUT OF NEURAL NETWORK</h3>
+
+<br/>
+
+The final output of the neural network can be mathematically expressed as a nested composite function. The computational graph shows us that 'C' is a function of a[2], a[2] is a function of Z[2], and Z[2] is a function of W[2], B[2] and a[1]. Therefore, in order to determine the partial derivative of the cost function with respect to W[2], the chain rule can be employed. 
+
+
+<h3>OVERALL VIEW OF GRADIENT DESCENT</h3>
+
+<br/>
+
+Once the loss/cost has been computed, the goal of the neural network is to improve upon the calculated loss - in other words, to reduce loss. In this project, I use the terms loss and cost interchangeably, however they are frequently differentiated. Loss is generally the evaluated error in relation to a single observation, whereas the cost function often refers to the average of the calculated loss functions. In a single epoch,loss is evaluated for every observation, however the cost is evaluated once.
+
+For every potential set of weights/biases, there is an associated loss. 
+The weights of the network are initialized randomly, or pseudo-randomly. Thus, we cannot expect the model to perform optimally after the first round - we are essentially blindfolded at the outset. The overall goal of the neural network is to discover parameters, in terms of weights and biases, that minimize the cost function. We need a reliable strategy that will help us discover parameters that will minimise the overall loss of the network - backpropagation to the rescue! 
+
+Backpropagation allows us to compute the derivatives/gradients of the loss function with respect to differing points throughout the network; we can discover how much the cost changes at particular locations of the loss curve. By employing multi-variable calculus, backpropagation provides us with a way of calculating the derivatives of the cost function, in a backwards fashion, by systematically recruiting the chain rule. This method enables us to effectively descend the gradients with respect to all of the respective weights. A big shout-out to Leibniz and Newton for their co-discovery of calculus! 
+
+<br>
+
+<h3>PARTIAL DERIVATIVES</h3>
+<br/>
+
+
+Each partial derivative represents the instantaneous rate of change of the loss/cost function with respect to the weight in question assuming that every other weight remains constant. We should bear in mind that we are updating all of the weights simultaneously. Gradient descent is a first-order iterative optimization algorithm that is used to locate local/global minima of differentiable functions. Partial derivatives provide us with the direction of steepest ascent; we move a step in the opposite direction, in other words, in the direction of greatest descent- by doing so, we are moving toward a local/global minima of the cost function. From time to time, loss will increase, however, generally this is unlikely to produce problems.
+
+
+<br>
+<h3>BENEFITS OF BIAS TERMS</h3>
+
+<br/>
+
+The addition of bias aids shifting the result of the activation function to the left or right. In addition, it also keeps the model learning/training when all the input features are set to 0.
+
+
+<br>
+
+
+
+<h3>CHOICE OF ACTIVATION</h3>
+<br>
+For simplicity, I employ a simple structure comprising of one input layer, one hidden layer, and an output layer. Initially, I used a sigmoid activation function in the hidden layer, however I quickly ran in to issues. The sigmoid Function’s derivative is confined to (0-0.25) range: unfortuately, this inclines the gradient toward zero as the layers increase. Ultimately, this often results in the deactivation of neurons, and the learning process of the neural network is thwarted.
+
+By recruiting the sigmoid function, it is likely that I encountered the classic issue of vanishing gradients. I then exchanged the sigmoid function for a choice of tanh/leaky ReLU activation function - this simple substitution worked wonders! The ReLU activation function has a number of notable advantages over other activation functions: it tends to converge faster than Tanh/sigmoid activation functions. Plus, it is computationally cheap.
+
+
+<br/>
+
+<h3>WHEN TO STOP USING BACKPROPAGATION?</h3>
+
+<br/>
+
+Backpropagation repeatedly alters the weights/biases of the interconnections with the aim of minimizing the discrepancy between the predicted output and the truth labels. We are constantly posing the  question: how does the loss alter when we adjust our weights. Generally, we continue until there is a convergence in loss, or the improvement in loss/cost plateaus.
+
+<br/>
+
+<h3>LEARNING RATE</h3>
+
+<br>
+
+The learning rate, or alpha term, is multiplied by the respective partial derivative of the loss function. In order to acquire an updated weight/bias, the resultant product is subtracted. The learning rate regulates the step size of the algorithm's movement toward a minimnum: it effectively scales the size of our weight updates. Choosing the size of the learning rate is somewhat arbitrary; however, if it calibrated too low, the training procedure will progress extremely slowly. On the other hand, if it is set too high, it can produce erratic behaviour whereby it overshoots the discovery of the desired minimum.
+<br/>
+
+
+<h3>WHY NORMALIZE</h3>
+<br/>
+
+Normalizing our initial input data to a standard scale, improves the learning speed of the network. Generally, convergence is quicker if the mean of each input variable over the training set is close to zero. On the contrary, if all elements of an input vector are positive, all of the updates of weights that go into a node will be characterised by the same sign. This results in an inefficient learning process.
+
+<br>
+
+<h3>REGULARIZATION</h3>
+
+
+<br>
+In terms of regularisation, I have opted to use the Tikhonov regularization. In the neural network literature, this is often referred to as L² regularization or weight decay (as this aspect decays the respective weights towards zero), the term is simply the squared Euclidean norm ² of the weight matrix of the hidden layer (or the sum of all such squared norms, in the case of multiple hidden layers, and including the output layer) of the network. The parameter, lambda(λ), adjusts the strength of the regularization.
+
+Regularization is aimed at minimising the generalization error - this refers to the algorithm's performance on unseen/new data. Regularization is not used to improve training error. As in other supervised machhine learning/deep learning tasks, we need to skillfully navigate the bias-variance tradeoff. Potentially, the algorithm may overfit (high variance)- this phenomenon can occur when the model overresembles the training data. On the flip side,if the model underfits (high bias), the model may not have sufficiently captured the core underlying patterns.
+
+<br>
+
+<h3>EPOCHS</h3>
+<br/>
+
+In the lingo of neural networks, one epoch refers to the movement of a complete dataset being passed through the forward and backward phases of the network precisely one time. In instances where a <b> complete </b> dataset is unable to be passed through a neural network in one epoch/cycle, the respective dataset can be partitioned into mini-batches.The number of cases/exemplars in one mini-batch is referred to as <b>batch size</b>. 
+
+Determining the number of epochs required for a neural network, is somewhat arbitatry and should be monitored by the analyst. When the batch size happens to be the entire dataset, the number of epochs is equivalent to the number of iterations.
+<br>
+
+<h2>OFFICIAL FUNCTION LIST</h2>
+<br/>
+
+Here, I created some functions that are recruited by the neural network.
+
+```{r}
+
+
+#function for rounding and tidying numbers.
+tidy_round <- function(x) format(x, digits = 2, big.mark = ",")
+
+
+#simple scale function
+SCALE <- function(x) {
+  x_mean <- mean(x, na.rm = TRUE)
+  x_sd <- sd(x, na.rm = TRUE)
+  scaledX <- (x - x_mean) / x_sd
+  return(scaledX)
+}
+
+
+#leaky relu
+leaky_relu<-function(a) {
+pmax(a* .01,a)
+}
+
+#derivative leaky relu
+d_leaky<-function(x){
+ifelse(x>0,1, .01)
+}
+
+
+#calculate softmax
+softmax = function(x) exp(x) / rowSums(exp(x))
+
+#bias matrix expansion helper
+row.replicate<-function(x,n){
+    matrix(rep(x,each=n),nrow=n)
+}
+
+#for bias derivatives
+ADD_cols <- function(x){apply(x, 2, sum)}
+
+
+#tanh derivative
+d_tanh<-function(x){1-(tanh(x)^2)}
+
+#activation derivative
+choice_derivative <- function(Z, activation_choice){
+if(activation_choice == "tanh"){
+    d_tanh(Z) 
+} else if (activation_choice == "leaky_relu"){ 
+    d_leaky(Z)
+    
+} }
+
+
+#activation choice for feed forward
+forward_activation <- function(Z, activation_choice){
+if(activation_choice == "tanh"){
+    tanh(Z) 
+} else if (activation_choice == "leaky_relu"){ 
+    leaky_relu(Z)
+    
+} }
+
+
+
+
+
+```
+
+<br>
+
+After many meanderings, I have finally put together a generic neural network. Here, I use <span  style = "color: #FFOOOO ; "> tanh </span> as the default activation function. 
+<br>
+
+```{r}
+NN_Solver <- function(X, Y, SCALE=FALSE, learn_rate = 0.4, activation_choice = "tanh", NODES_TO_FIT, Reg_lev=0.01, epochs){
+
+
+if (anyNA(X) | anyNA(Y))
+stop("Please address missing values")
+
+
+  
+if (length(X) < 2 | length(Y) < 2)
+stop("There are insufficient observations") 
+
+  
+if (nrow(X) != nrow(Y)) 
+stop("'X' and 'Y' must contain the same number of rows")  
+  
+ 
+if(!all(purrr::map_lgl(X, is.numeric)))
+stop("all rows should be numeric")
+  
+
+if (!is.matrix(X))  {X=as.matrix(X)}
+  
+  
+if (!is.matrix(Y))  {Y=as.matrix(Y)}
+  
+
+if (SCALE) {X=SCALE(X)}
+
+ 
+
+NEXAMPS<-nrow(X) #quantity of cases
+NCLASSES<-ncol(Y) #quantity of output classes
+NFEATURES<-ncol(X) #quantity of features
+
+
+W1<-matrix(rnorm(NFEATURES*NODES_TO_FIT), nrow=NFEATURES) * 0.01 #number weights required for nodes
+B1 <- matrix(0, nrow = 1, ncol = NODES_TO_FIT) #first bias
+W2<-matrix(rnorm(NODES_TO_FIT*NCLASSES), nrow=NODES_TO_FIT) * 0.01   #number weights required for nodes
+B2 <- matrix(0, nrow = 1, ncol = NCLASSES) #second bias
+B2DERIV <- matrix(1, nrow = 1, ncol = NCLASSES) #B2 DERIVATIVE
+B1DERIV<-matrix(1, nrow = 1, ncol = NODES_TO_FIT) #B1 DERIVATIVE
+
+
+
+cost_history <- c()# vector to contain error history, for plotting later
+
+
+
+#forward propagation calculation
+
+
+for (i in 0:epochs){
+
+
+Z1 <- X%*% W1 + row.replicate(B1,NEXAMPS)
+
+
+Z1 <- matrix(Z1, nrow = NEXAMPS)
+
+
+#apply leaky RELu/tanh
+A1<-forward_activation(Z1, activation_choice)
+
+
+Z2 <- A1%*%W2 + row.replicate(B2,NEXAMPS)
+
+#apply softmax
+Quasiprobs<-softmax(Z2)
+
+#Calculate Categorical Cross Entropy Error
+entropy_loss <- mean(-rowSums(Y * log(Quasiprobs)))
+
+
+#Calculate regularized loss
+L2_loss <- 0.5*Reg_lev*sum(W1*W1) + 0.5*Reg_lev*sum(W2*W2)
+
+
+#Regularized loss
+error <- entropy_loss + L2_loss
+
+
+#select highest predicted likelihood
+estimated_class <- apply(Quasiprobs, MARGIN = 1, FUN = which.max)
+
+#truth value
+actual_class <- apply(Y, MARGIN = 1, FUN = which.max)
+
+
+#calculate overall accuracy
+accuracy <- mean(estimated_class == actual_class)
+
+
+#capture progressing cost    
+cost_history <- c(cost_history, error)
+
+
+#apply modulo operator(it translates as remainder of division)
+if (i%%10 == 0){
+
+
+print(paste("Cycle", i,': Error', error, ' : accuracy:', tidy_round(accuracy)))}
+   
+#Backpropagation phase (apply derivatives)
+
+
+
+CL_CZ2 <- Quasiprobs- Y  #Partial C/Partial Z
+
+
+CL_CZ2<-CL_CZ2/NEXAMPS   #Evaluate average derivative
+
+
+CL_B2<-ADD_cols(CL_CZ2)  #Partial C/ B2
+
+
+CL_W2 <- t(A1)%*%CL_CZ2  #Partial C/ W2
+
+
+CL_X2<- CL_CZ2%*%t(W2)   #Partial C/ A1
+
+
+CL_CZ1<- CL_X2 * choice_derivative(Z1, activation_choice) #Partial X2/ Z1
+  
+
+CL_CW1<-t(X)%*%CL_CZ1           #Partial C/W1
+
+
+CL_B1<-ADD_cols(CL_CZ1)         #Partial C/B1
+   
+
+CL_W2 <- CL_W2 + Reg_lev *W2    #Regularized derivative C/W2
+
+
+CL_CW1 <- CL_CW1 + Reg_lev *W1  #Regularized derivative C/W1
+   
+   
+   
+   
+    
+    W2<- W2-learn_rate*CL_W2     #implement gradient descent W2
+    B2 <- B2-learn_rate*CL_B2    #implement gradient descent B2
+   
+    W1<- W1-learn_rate*CL_CW1    #implement gradient descent W1
+    B1 <- B1-learn_rate*CL_B1    #implement gradient descent WB1
+    
+    accuracy<-accuracy           #overall accuracy
+   
+   
+  }
+  
+
+key_metrics <- list("W2" = W2, 
+                  "B2" = B2,
+                  "W1" = W1,
+                  "B1" = B1,
+                  "accuracy"=accuracy,
+                  "cost_hist" = cost_history,
+                  "ALTERNATE_B1"="ALTERNATE_B1",
+                  "ALTERNATE_B2"="ALTERNATE_B2")
+    
+
+return(key_metrics)
+
+
+
+}
+
+```
+<br/>
+
+Finally, it was time for the fun part -this neural network was now ready do its thing! I trained the neural network by running 1000 epochs.
+
+```{r, cache=TRUE}
+set.seed(123)
+TRAINED_MODEL <- NN_Solver(X, Y, SCALE=TRUE, learn_rate = 0.2, NODES_TO_FIT=40, Reg_lev=0.01, epochs=700)
+```
+<h2>PLOTTING ERROR OVER EPOCHS</h2>
+
+<br/>
+
+Here, I plot the variation in error as training progressed.
+```{r,}
+number_epochs<-length(TRAINED_MODEL$cost_hist)
+newcol<-1:number_epochs
+costChange<-TRAINED_MODEL$cost_hist
+
+dfprep<-cbind(newcol,costChange)
+dataframe<-data.frame(dfprep)
+```
+<br/>
+
+Time for plotting (here I used the highcharter package- allowing us to easily obtain high calibre interactive visuals with minimal effort).
+
+<br/>
+
+```{r}
+highchart() %>%
+    hc_add_series(data = dataframe,
+                  type = "line",
+                  hcaes(x = newcol,
+                        y = costChange 
+                        )) %>%
+    
+    hc_xAxis(title = list(text="Epochs")) %>%
+    hc_yAxis(title = list(text="Cost")) %>%
+    hc_plotOptions(series = list(marker = list(symbol = "circle"))) %>%
+    hc_legend(align = "right", 
+              verticalAlign = "top")
+
+```
+
+<h3>PREDICTION FUNCTION</h3>
+<br/>
+
+Here, I put together a prediction function that enables the neural network to make new predictions on unseen data.
+
+
+<br>
+
+
+```{r}
+Neural_Predictor <- function(TRAINED_MODEL,X,activation_choice = "tanh"){
+  
+ #number of cases  
+N <- nrow(X)
+
+#commence forward-activation
+Z1 <- X%*%TRAINED_MODEL$W1 + row.replicate(TRAINED_MODEL$B1,N)
+
+Z1 <- matrix(Z1, nrow = N)
+
+A1<-forward_activation(Z1, activation_choice)
+
+Z2 <- A1%*%TRAINED_MODEL$W2 + row.replicate(TRAINED_MODEL$B2,N)
+
+pred_class <- apply(Z2, 1, which.max) #identify index with highest value
+
+return(pred_class) }
+```
+<br>
+
+Let's see how accurately the trained model classified data from the test set:
+
+```{r}
+PRED_CLASS <- Neural_Predictor(X=XTEST, TRAINED_MODEL, activation_choice = "tanh") #run model with optimised parameters
+
+
+mean_round_prep<-mean(PRED_CLASS == YORIG_TEST)
+Percentage=paste('Accuracy percentage:',paste0(round(mean_round_prep*100,2),"%"))
+Percentage
+```
+<br/>
+
+I wanted a little more nuance in the quality of the predictions; how well did the model perform in relation to specific digits:
+```{r}
+library(caret)
+confusionMatrix(as.factor(PRED_CLASS), reference = as.factor(YORIG_TEST))
+```
+
+<br>
+
+Sensitivity captures the true positive rate (TPR) - it measures the proportion of the time that a particular digit is present and the neural network correctly predicted that the respective digit was there. Class 1 refers to the <span style = "color: orange ; "> 0 </span> digit, class 2 refers to the digit <span style = "color: orange ; "> 1 </span>, and so forth. 
+
+
+<br>
+
+For the mathematically inclined, please follow this [link](https://github.com/GamalGabr/NeuralNetWork2/blob/main/README.md).Therein, I demonstrate how to obtain the key derivatives used in the neural network function featured in this article.
+
+
+
+
+
+
