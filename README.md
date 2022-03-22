@@ -5,7 +5,7 @@ Neural Networks Part 2
 <br>
  
 
-This post is the second part of a two-part series on how to construct a neural network function from scratch. Part 1 is an RMarkdown document in which I feature the R code I used to construct the neural network from scratch, the document can be viewed [here](https://rpubs.com/IsaacGabr/877855).
+This post is the second part of a two-part series on how to construct a neural network function from scratch. Part 1 is an RMarkdown document in which I feature the R code I used to construct the neural network, the document can be viewed [here](https://rpubs.com/IsaacGabr/877855).
 Firstly, a reminder of the feedforward phase:
 
 <br>
