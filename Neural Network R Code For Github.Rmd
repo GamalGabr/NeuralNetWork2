@@ -81,7 +81,7 @@ one_hot_convert<-function(Y){
                   }
 ```
 <br>
-After obtaining the raw training data from the dslabs library - I  did a little spring cleaning, before splitting the data into a training and validation set.
+After obtaining the raw training data from the dslabs library - I  did a little spring cleaning, before splitting the data into a training and validation set. In the dslabs library, the data is already divided into a training and testing set. Given the huge volume of data, I decided to recruit the training set alone. Below, I show the code I used to divide the training set into a train/test set.
 
 <br>
 
