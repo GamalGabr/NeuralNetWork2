@@ -1,5 +1,5 @@
-# NeuralNetWork2
-Neural Networks Part 2
+# Building a neural network from scratch
+
 
 
 I wanted to set myself the challenge of building a neural network from scratch, depending solely on base R. I think the best way to fully get to grips with an algorithm is to code it from the ground up - one is left with little wiggle room for winging it. Moreover, I wanted to tackle the well-known MNIST (“Modified National Institute of Standards and Technology”) digit classification problem. The dataset is a collection of handwritten digits: with each row representing a single digit, and each column representing a 0-255 grey scale pixel. I kept asking myself the question, could I design a neural network algorithm to achieve an accuracy of at least 90% accuracy in the field of simple digit recognition? For the vast majority of the project, I found myself scribbling away with good old fashioned pen and paper - obtaining the key derivatives was by far the trickiest aspect of the process!  
