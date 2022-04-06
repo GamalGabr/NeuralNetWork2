@@ -5,12 +5,12 @@
 I wanted to set myself the challenge of building a neural network from scratch, depending solely on base R. I think the best way to fully get to grips with an algorithm is to code it from the ground up - one is left with little wiggle room for winging it. Moreover, I wanted to tackle the well-known MNIST (“Modified National Institute of Standards and Technology”) digit classification problem. The dataset is a collection of handwritten digits: with each row representing a single digit, and each column representing a 0-255 grey scale pixel. I kept asking myself the question, could I design a neural network algorithm to achieve an accuracy of at least 90% accuracy in the field of simple digit recognition? The algorithm worked wonders! After finally managing to get it fully operational, and subsequent training, the time came for it to be trialled on the validation set : it scored just shy of 90% in terms of overall accuracy. I did not spend long experimenting with different parameters. 
 
 For the vast majority of the project, I found myself scribbling away with good old fashioned pen and paper - obtaining the key derivatives was by far the trickiest aspect of the process!  The project ended up as a two-part series on how to construct a neural network from scratch. Part 1 contains the bulk of the project, it is
-rendered as an RMarkdown document and features all of the R code I used to build the neural network. If you would like to see the first part, click [here](https://rpubs.com/IsaacGabr/877855). Below, I feature the second part of the project - in this part of the project, I detail the process of obtaining the key derivatives recruited by the neural network.
+rendered as an RMarkdown document and features all of the R code I used to build the neural network. If you would like to see the first part, click [here](https://rpubs.com/IsaacGabr/877855).  Below, I feature the second part of the project - in this part of the project, I detail the process of obtaining the key derivatives recruited by the neural network.
 
 
 
 <h2>EQUATION TIME!</h2>
-<br>
+<br/>
 
 
 
@@ -20,17 +20,17 @@ rendered as an RMarkdown document and features all of the R code I used to build
 <br/>
 Firstly, a reminder of the feedforward phase for a small neural that I introduced in part 1:
 
-<br>
+<br/>
 
 ![20220307_233706](https://user-images.githubusercontent.com/81494595/158276088-a4db7337-0413-4ea4-b7c9-43738345989f.jpg)
 
-<br>
+<br/>
 
 
 
 Below, the local gradients required for calculating the cost in relation to the first group of weights is displayed:
 
-<br>
+<br/>
 
 ![20220312_181349](https://user-images.githubusercontent.com/81494595/158041789-feaa74d8-0a9b-4684-a00b-cd53af4e6a1a.jpg)
 
@@ -39,17 +39,17 @@ Here, we begin by obtaining the relevant derivatives in a backward fashion. In t
 
 
 
-<br>
+<br/>
 
 
 ![20220307_232408](https://user-images.githubusercontent.com/81494595/157572621-35831cbc-2fec-4aad-843e-40c0016f3819.jpg)
 
-<br>
+<br/>
 
 ![20220224_105431](https://user-images.githubusercontent.com/81494595/157787880-90d50e9e-f89e-40e2-b7bc-6806425df7f5.jpg)
 
 
-<br>
+<br/>
 
 
 ![20220312_181532](https://user-images.githubusercontent.com/81494595/158041887-982a243c-055a-4d43-8c2d-1cabb6e09332.jpg)
