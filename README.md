@@ -2,7 +2,7 @@
 
 
 
-I wanted to set myself the challenge of building a neural network from scratch, depending solely on base R. I think the best way to fully get to grips with an algorithm is to code it from the ground up - one is left with little wiggle room for winging it. Moreover, I wanted to tackle the well-known MNIST (“Modified National Institute of Standards and Technology”) digit classification problem. The dataset is a collection of handwritten digits: with each row representing a single digit, and each column representing a 0-255 grey scale pixel. I kept asking myself the question, could I design a neural network algorithm to achieve an accuracy of at least 90% accuracy in the field of simple digit recognition? I am pleased to report that the algorithm worked wonders! After finally managing to get it fully operational, and subsequent training, the time came for it to be trialled on the validation set : it scored just shy of 90% in terms of overall accuracy. In terms of specificity metrics, the digit 5 proved to be the hardest to detect (sensitivity: 72.5%), whereas the 0 digit was detected over 97% of the time. In terms of the sensitivity metric, the classifier scored between 85-97% for the other digits. The specificity results showed that the most commonly incorrectly predicted digit was 8 (
+I wanted to set myself the challenge of building a neural network from scratch, depending solely on base R . I think the best way to fully get to grips with an algorithm is to code it from the ground up - one is left with little wiggle room for winging it. Moreover, I wanted to tackle the well-known MNIST (“Modified National Institute of Standards and Technology”) digit classification problem. The dataset is a collection of handwritten digits: with each row representing a single digit, and each column representing a 0-255 grey scale pixel. I kept asking myself the question, could I design a neural network algorithm to achieve an accuracy of at least 90% accuracy in the field of simple digit recognition? I am pleased to report that the algorithm worked wonders! After finally managing to get it fully operational, and subsequent training, the time came for it to be trialled on the validation set : it scored just shy of 90% in terms of overall accuracy. In terms of specificity metrics, the digit 5 proved to be the hardest to detect (sensitivity: 72.5%), whereas the 0 digit was detected over 97% of the time. In terms of the sensitivity metric, the classifier scored between 85-97% for the other digits. The specificity results showed that the most commonly incorrectly predicted digit was 8 (
 specificity: 95.6% ) . I did not spend long experimenting with differing parameters. 
 
 For the vast majority of the project, I found myself scribbling away with good old fashioned pen and paper - obtaining the key derivatives was by far the trickiest aspect of the process!  The project ended up as a two-part series on how to construct a neural network from scratch. Part 1 contains the bulk of the project, it is
@@ -22,7 +22,8 @@ rendered as an RMarkdown document and features all of the R code I used to build
 Firstly, a reminder of the feedforward phase for a small neural that I introduced in part 1:
 
 <br/>
-<br>
+<br/>
+
 ![20220307_233706](https://user-images.githubusercontent.com/81494595/158276088-a4db7337-0413-4ea4-b7c9-43738345989f.jpg)
 
 <br/>
